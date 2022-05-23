@@ -1,0 +1,36 @@
+{
+    "name": "digitalpolygon/pantheon-drupal-integration",
+    "description": "Integrate all pantheon dependencies in a composer based drupal project",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Gaurav Goyal",
+            "email": "gaurav@digitalpolygon.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://packages.drupal.org/8"
+        }
+    ],
+    "require": {
+        "drupal/pantheon_advanced_page_cache": "^1.2",
+        "pantheon-systems/drupal-integrations": "^9",
+        "drupal/redis": "^1.5"
+    },
+    "extra": {
+        "drupal-scaffold": {
+            "file-mapping": {
+                "[project-root]/.github/workflows/deploy.yml": "assets/github/workflows/deploy.yml",
+                "[project-root]/.github/workflows/multidev.yml": "assets/github/workflows/multidev.yml",
+                "[project-root]/.github/workflows/remove-multidev.yml": "assets/github/workflows/remove-multidev.yml",
+                "[project-root]/web/private/scripts/config-updates.php": "assets/quicksilver/private/scripts/config-updates.php",
+                "[project-root]/pantheon.yml": "assets/pantheon/pantheon.yml"
+            }
+        }
+    },
+    "version": "0.0.1"
+}

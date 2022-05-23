@@ -1,0 +1,43 @@
+name: Remove Multidev environment
+
+on:
+  pull_request:
+    types: [ closed ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Setup PHP
+      id: setup-php
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '7.4'
+
+    - uses: actions/checkout@v2
+      with:
+          fetch-depth: 0
+
+    - uses: shimataro/ssh-key-action@v2
+      with:
+        key: ${{ secrets.PANTHEON_SSH_KEY }}
+        config: ${{ secrets.SSH_CONFIG }}
+        known_hosts: ${{ secrets.KNOWN_HOSTS }}
+
+    - name: Install Terminus
+      env:
+        pantheon_machine_token: '${{ secrets.PANTHEON_MACHINE_TOKEN }}'
+      run: |
+        mkdir ~/terminus && cd ~/terminus
+        curl -L https://github.com/pantheon-systems/terminus/releases/download/$(curl --silent "https://api.github.com/repos/pantheon-systems/terminus/releases/latest" | perl -nle'print $& while m{"tag_name": "\K.*?(?=")}g')/terminus.phar --output terminus
+        chmod +x terminus
+        sudo ln -s ~/terminus/terminus /usr/local/bin/terminus
+        cd -
+        terminus auth:login --machine-token=$pantheon_machine_token
+
+    - name: Remove multidev environment
+      env:
+        pr_number: ${{ github.event.number }}
+        site_name: ${{ secrets.SITE_NAME }}
+      run: |
+        terminus multidev:delete --delete-branch --no-interaction --yes $site_name.pr-$pr_number

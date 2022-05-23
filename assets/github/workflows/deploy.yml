@@ -1,0 +1,66 @@
+name: Deploy to Pantheon
+
+env:
+  php_version: '7.4'
+
+on:
+  push:
+    branches:
+      - 'main'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Setup PHP
+      id: setup-php
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '7.4'
+
+    - uses: actions/checkout@v2
+      with:
+          fetch-depth: 0
+
+    - name: Install SSH Key
+      uses: shimataro/ssh-key-action@v2.3.1
+      with:
+        key: ${{ secrets.PANTHEON_SSH_KEY }}
+        config: ${{ secrets.SSH_CONFIG }}
+        known_hosts: ${{ secrets.KNOWN_HOSTS }}
+
+    - name: Validate composer
+      run: |
+        composer validate --strict
+
+    - name: Setup Node js
+      uses: actions/setup-node@v1
+      with:
+        node-version: '14.18.2'
+
+    - name: Run composer install
+      run: |
+        composer install --prefer-dist --no-progress --no-dev
+
+    - name: Install and build frontend dependencies
+      run: |
+        ./scripts/frontend/build.sh
+      shell: bash
+
+    - name: Prepare code for deployment
+      env:
+        pantheon_repo: '${{ secrets.PANTHEON_REPO }}'
+      run: |
+        git config user.email "devops@example.com"
+        git config user.name "DevOps"
+        git remote add pantheon $pantheon_repo
+        rm -rf web/themes/custom/*/node_modules
+        git add --force .
+        commit_message=$(git log -1 --pretty=%B)
+        git commit -m "Automated deploy #${{ github.event.number }}: $commit_message"
+
+    - name: Deploy
+      env:
+        pantheon_repo: '${{ secrets.PANTHEON_REPO }}'
+      run: |
+        git push --force pantheon HEAD:master
