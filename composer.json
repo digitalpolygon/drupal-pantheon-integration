@@ -1,7 +1,7 @@
 {
     "name": "digitalpolygon/pantheon-drupal-integration",
     "description": "Integrate all pantheon dependencies in a composer based drupal project",
-    "type": "project",
+    "type": "library",
     "license": "MIT",
     "authors": [
         {
