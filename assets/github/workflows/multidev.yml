@@ -1,7 +1,7 @@
 name: Create Multidev Environment
 
 env:
-  php_version: '7.4'
+  php_version: '8.1'
 
 on:
   pull_request:
@@ -16,7 +16,7 @@ jobs:
       id: setup-php
       uses: shivammathur/setup-php@v2
       with:
-        php-version: '7.4'
+        php-version: '8.1'
 
     - uses: actions/checkout@v2
       with:
