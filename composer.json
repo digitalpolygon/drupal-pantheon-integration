@@ -17,9 +17,9 @@
         }
     ],
     "require": {
-        "drupal/pantheon_advanced_page_cache": "^1.2",
-        "pantheon-systems/drupal-integrations": "^9",
-        "drupal/redis": "^1.5"
+        "drupal/pantheon_advanced_page_cache": "^2.2",
+        "pantheon-systems/drupal-integrations": "^10",
+        "drupal/redis": "^1.7"
     },
     "extra": {
         "drupal-scaffold": {
@@ -32,5 +32,5 @@
             }
         }
     },
-    "version": "0.0.1"
+    "version": "0.0.2"
 }
